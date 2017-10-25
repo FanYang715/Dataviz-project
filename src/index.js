@@ -1,4 +1,4 @@
-import scatterPlot from './src/scatterPlot'
+import scatterPlot from 'src/scatterPlot'
 
 const xValue = d => d.attack;
 const xLabel = 'Attack';
