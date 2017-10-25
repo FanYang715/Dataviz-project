@@ -1,5 +1,3 @@
-import scatterPlot from 'scatterPlot'
-
 const xValue = d => d.attack;
 const xLabel = 'Attack';
 const yValue = d => d.defense;
