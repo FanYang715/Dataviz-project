@@ -1,12 +1,20 @@
 const xScale = d3.scaleLinear();
 const yScale = d3.scaleLinear();
-
 const colorScale = d3.scaleOrdinal()
   .range(d3.schemeCategory10);
 
+const xAxis = d3.axisBottom()
+  .scale(xScale)
+  .tickPadding(16);
 
-const radiusScale = d3.scaleSqrt();
-const fillOpacityScale = d3.scaleThreshold();
+const yAxis = d3.axisLeft()
+  .scale(yScale)
+  .ticks(8)
+  .tickPadding(9);
+
+const colorLegend = d3.legendColor()
+  .scale(colorScale)
+  .shape('circle');
 
 export default function (svg, props) {
   const { 
@@ -19,74 +27,84 @@ export default function (svg, props) {
     colorLabel,
     margin
   } = props;
+  
+  const width = svg.attr('width');
+  const height = svg.attr('height');
+  const innerWidth = width - margin.left - margin.right;
+  const innerHeight = height - margin.top - margin.bottom;
+  
+  xAxis.tickSize(-innerHeight);
+  yAxis.tickSize(-innerWidth);
 
-function render(selection, d) {
-  const x = d.x;
-  const y = d.y;
-  const color = d.color;
-  const radius = d.radius;
-  const margin = d.margin;
-  const innerWidth = d.width - margin.left - margin.right;
-  const innerHeight = d.height - margin.top - margin.bottom;
-  const minRadius = 1;
-  const maxRadius = 12;
+  let g = svg.selectAll('.container').data([null]);
+  const gEnter = g.enter().append('g').attr('class', 'container');
+  g = gEnter
+    .merge(g)
+      .attr('transform', `translate(${margin.left},${margin.top})`);
+
+  const xAxisGEnter = gEnter.append('g').attr('class', 'x-axis');
+  const xAxisG = xAxisGEnter
+    .merge(g.select('.x-axis'))
+      .attr('transform', `translate(0, ${innerHeight})`);
+
+  const yAxisGEnter = gEnter.append('g').attr('class', 'y-axis');
+  const yAxisG = yAxisGEnter.merge(g.select('.y-axis'));
+
+  const colorLegendGEnter = gEnter.append('g').attr('class', 'legend');
+  const colorLegendG = colorLegendGEnter
+    .merge(g.select('.legend'))
+      .attr('transform', `translate(${innerWidth + 60}, 150)`);
+
+  xAxisGEnter
+    .append('text')
+      .attr('class', 'axis-label')
+      .attr('y', 100)
+    .merge(xAxisG.select('.axis-label'))
+      .attr('x', innerWidth / 2)
+      .text(xLabel);
+
+  yAxisGEnter
+    .append('text')
+      .attr('class', 'axis-label')
+      .attr('y', -60)
+      .style('text-anchor', 'middle')
+    .merge(yAxisG.select('.axis-label'))
+      .attr('x', -innerHeight / 2)
+      .attr('transform', `rotate(-90)`)
+      .text(yLabel);
+
+  colorLegendGEnter
+    .append('text')
+      .attr('class', 'legend-label')
+      .attr('x', -5)
+      .attr('y', -32)
+    .merge(colorLegendG.select('legend-label'))
+      .text(colorLabel);
 
   xScale
-    .domain(d3.extent(d.data, d => d[x]))
-    .range([0, innerWidth]);
+    .domain(d3.extent(data, xValue))
+    .range([0, innerWidth])
+    .nice();
+
   yScale
-    .domain(d3.extent(d.data, d => d[y]))
-    .range([innerHeight, 0]);
-  colorScale
-    .domain(d3.extent(d.data, d => d[color]));
-  radiusScale
-    .range([mobileScreen ? 1 : 2, mobileScreen ? 10 : 16])
-    .domain(d3.extent(d.data, d => d[radius]));
+    .domain(d3.extent(data, yValue))
+    .range([innerHeight, 0])
+    .nice();
 
-    // set the fill opacity
-    // based on the cardinality of the data
-  fillOpacityScale
-    .domain([200, 300, 500])
-    .range([0.7, 0.5, 0.3, 0.2]);
-
-  selection
-    .attr('transform', `translate(${margin.left},${margin.top})`)
-    .call(axis, [
-      {
-        type: 'Left',
-        scale: yScale,
-        translateX: -12,
-      },
-      {
-        type: 'Bottom',
-        scale: xScale,
-        translateY: innerHeight + 12,
-        ticks: 20,
-      },
-    ]);
-
-  const renderData = d.data;
-  const circles = selection
-    .selectAll('.point')
-    .data(d.data);
-
-  circles.exit().remove();
+  const circles = g.selectAll('.mark').data(data);
   circles
     .enter().append('circle')
-      .attr('class', 'point')
-      .attr('r', 0)
-      .attr('cx', (d.width / 2) - margin.left)
-      .attr('cy', (d.height / 2) - margin.top)
+      .attr('class', 'mark')
+      .attr('fill-opacity', 0.6)
+      .attr('r', 8)
     .merge(circles)
-      .on('mouseover', d.show)
-      .on('mouseout', d.hide)
-    .transition()
-      .duration(2000)
-      .delay((d, i) => i * 5)
-      .attr('r', d => radiusScale(d[radius]))
-      .attr('cx', d => xScale(d[x]))
-      .attr('cy', d => yScale(d[y]))
-      .attr('color', d => colorScale(d[color]))
-      .style('fill-opacity', fillOpacityScale(renderData.length));
-}
+      .attr('cx', d => xScale(xValue(d)))
+      .attr('cy', d => yScale(yValue(d)))
+      .attr('fill', d => colorScale(colorValue(d)));
 
+  xAxisG.call(xAxis);
+  yAxisG.call(yAxis);
+  colorLegendG.call(colorLegend)
+    .selectAll('.cell text')
+      .attr('dy', '0.1em');
+}
