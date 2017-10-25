@@ -85,7 +85,7 @@ const row = d => {
   return d;
 };
 
-d3.csv('pokemon.csv', row, data => {
+d3.csv('data/pokemon.csv', row, data => {
   const render = () => {
     svg
       .attr('width', visualizationDiv.clientWidth)
