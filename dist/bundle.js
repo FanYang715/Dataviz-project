@@ -82,7 +82,7 @@ const margin = { left: 107, right: 177, top: 18, bottom: 128 };
 
 const visualization = d3.select('#visualization');
 const visualizationDiv = visualization.node();
-const svg = visualization.select('svg');
+const svg = d3.select('svg');
 
 const row = d => {
   d.attack = +d.attack;
@@ -90,16 +90,11 @@ const row = d => {
   return d;
 };
 
-d3.csv('data/pokemon.csv', row, data => {
-
+d3.csv('pokemon.csv', row, data => {
   const render = () => {
-
-    // Extract the width and height that was computed by CSS.
     svg
       .attr('width', visualizationDiv.clientWidth)
       .attr('height', visualizationDiv.clientHeight);
-
-    // Render the scatter plot.
     Object(__WEBPACK_IMPORTED_MODULE_0__scatterPlot__["a" /* default */])(svg, {
       data,
       xValue,
@@ -111,8 +106,8 @@ d3.csv('data/pokemon.csv', row, data => {
       margin
     });
   }
-
-  // Draw for the first time to initialize.
+  
+    // Draw for the first time to initialize.
   render();
 
   // Redraw based on the new size whenever the browser window is resized.
@@ -154,12 +149,12 @@ const colorLegend = d3.legendColor()
     colorLabel,
     margin
   } = props;
-
+  
   const width = svg.attr('width');
   const height = svg.attr('height');
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
-
+  
   xAxis.tickSize(-innerHeight);
   yAxis.tickSize(-innerWidth);
 
