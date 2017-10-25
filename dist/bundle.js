@@ -77,7 +77,7 @@ const margin = { left: 107, right: 177, top: 18, bottom: 128 };
 
 const visualization = d3.select('#visualization');
 const visualizationDiv = visualization.node();
-const svg = d3.select('svg');
+const svg = visualization.select('svg');
 
 const row = d => {
   d.attack = +d.attack;
