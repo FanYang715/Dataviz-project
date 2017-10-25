@@ -72,27 +72,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scatterPlot__ = __webpack_require__(1);
 
 
-const xValue = d => d.sepalLength;
-const xLabel = 'Sepal Length';
-const yValue = d => d.petalLength;
-const yLabel = 'Petal Length';
-const colorValue = d => d.species;
-const colorLabel = 'Species';
-const margin = { left: 120, right: 300, top: 20, bottom: 120 };
+const xValue = d => d.attack;
+const xLabel = 'Attack';
+const yValue = d => d.defense;
+const yLabel = 'Defnse';
+const colorValue = d => d.type1;
+const colorLabel = 'Type1';
+const margin = { left: 107, right: 177, top: 18, bottom: 128 };
 
 const visualization = d3.select('#visualization');
 const visualizationDiv = visualization.node();
 const svg = visualization.select('svg');
 
 const row = d => {
-  d.petalLength = +d.petalLength;
-  d.petalWidth = +d.petalWidth;
-  d.sepalLength = +d.sepalLength;
-  d.sepalWidth = +d.sepalWidth;
+  d.attack = +d.attack;
+  d.defense = +d.defense;
   return d;
 };
 
-d3.csv('data/iris.csv', row, data => {
+d3.csv('data/pokemon.csv', row, data => {
 
   const render = () => {
 
@@ -134,12 +132,12 @@ const colorScale = d3.scaleOrdinal()
 
 const xAxis = d3.axisBottom()
   .scale(xScale)
-  .tickPadding(15);
+  .tickPadding(16);
 
 const yAxis = d3.axisLeft()
   .scale(yScale)
-  .ticks(5)
-  .tickPadding(15);
+  .ticks(8)
+  .tickPadding(9);
 
 const colorLegend = d3.legendColor()
   .scale(colorScale)
@@ -205,8 +203,8 @@ const colorLegend = d3.legendColor()
   colorLegendGEnter
     .append('text')
       .attr('class', 'legend-label')
-      .attr('x', -30)
-      .attr('y', -40)
+      .attr('x', -5)
+      .attr('y', -32)
     .merge(colorLegendG.select('legend-label'))
       .text(colorLabel);
 
