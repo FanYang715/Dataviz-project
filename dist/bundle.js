@@ -70,7 +70,6 @@
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scatterPlot__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scatterPlot___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__scatterPlot__);
 
 
 const xValue = d => d.attack;
@@ -91,12 +90,18 @@ const row = d => {
   return d;
 };
 
-d3.csv('./data/pokemon.csv', row, data => {
+d3.csv('data/pokemon.csv', row, data => {
+  
   const render = () => {
+    
+    
+    // Extract the width and height that was computed by CSS.
     svg
       .attr('width', visualizationDiv.clientWidth)
       .attr('height', visualizationDiv.clientHeight);
-    Object(__WEBPACK_IMPORTED_MODULE_0__scatterPlot__["default"])(svg, {
+    
+    // Render the scatter plot.
+    Object(__WEBPACK_IMPORTED_MODULE_0__scatterPlot__["a" /* default */])(svg, {
       data,
       xValue,
       xLabel,
@@ -118,9 +123,120 @@ d3.csv('./data/pokemon.csv', row, data => {
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-throw new Error("Module parse failed: Unexpected token (19:37)\nYou may need an appropriate loader to handle this file type.\n|   .shape('circle');\n| \n| export default function (svg, props) => {\n|   const { \n|     data,");
+"use strict";
+const xScale = d3.scaleLinear();
+const yScale = d3.scaleLinear();
+const colorScale = d3.scaleOrdinal()
+  .range(d3.schemeCategory10);
+
+const xAxis = d3.axisBottom()
+  .scale(xScale)
+  .tickPadding(16);
+
+const yAxis = d3.axisLeft()
+  .scale(yScale)
+  .ticks(8)
+  .tickPadding(9);
+
+const colorLegend = d3.legendColor()
+  .scale(colorScale)
+  .shape('circle');
+
+/* harmony default export */ __webpack_exports__["a"] = (function (svg, props) {
+  const { 
+    data,
+    xValue,
+    xLabel,
+    yValue,
+    yLabel,
+    colorValue,
+    colorLabel,
+    margin
+  } = props;
+  
+  const width = svg.attr('width');
+  const height = svg.attr('height');
+  const innerWidth = width - margin.left - margin.right;
+  const innerHeight = height - margin.top - margin.bottom;
+  
+  xAxis.tickSize(-innerHeight);
+  yAxis.tickSize(-innerWidth);
+
+  let g = svg.selectAll('.container').data([null]);
+  const gEnter = g.enter().append('g').attr('class', 'container');
+  g = gEnter
+    .merge(g)
+      .attr('transform', `translate(${margin.left},${margin.top})`);
+
+  const xAxisGEnter = gEnter.append('g').attr('class', 'x-axis');
+  const xAxisG = xAxisGEnter
+    .merge(g.select('.x-axis'))
+      .attr('transform', `translate(0, ${innerHeight})`);
+
+  const yAxisGEnter = gEnter.append('g').attr('class', 'y-axis');
+  const yAxisG = yAxisGEnter.merge(g.select('.y-axis'));
+
+  const colorLegendGEnter = gEnter.append('g').attr('class', 'legend');
+  const colorLegendG = colorLegendGEnter
+    .merge(g.select('.legend'))
+      .attr('transform', `translate(${innerWidth + 60}, 150)`);
+
+  xAxisGEnter
+    .append('text')
+      .attr('class', 'axis-label')
+      .attr('y', 100)
+    .merge(xAxisG.select('.axis-label'))
+      .attr('x', innerWidth / 2)
+      .text(xLabel);
+
+  yAxisGEnter
+    .append('text')
+      .attr('class', 'axis-label')
+      .attr('y', -60)
+      .style('text-anchor', 'middle')
+    .merge(yAxisG.select('.axis-label'))
+      .attr('x', -innerHeight / 2)
+      .attr('transform', `rotate(-90)`)
+      .text(yLabel);
+
+  colorLegendGEnter
+    .append('text')
+      .attr('class', 'legend-label')
+      .attr('x', -5)
+      .attr('y', -32)
+    .merge(colorLegendG.select('legend-label'))
+      .text(colorLabel);
+
+  xScale
+    .domain(d3.extent(data, xValue))
+    .range([0, innerWidth])
+    .nice();
+
+  yScale
+    .domain(d3.extent(data, yValue))
+    .range([innerHeight, 0])
+    .nice();
+
+  const circles = g.selectAll('.mark').data(data);
+  circles
+    .enter().append('circle')
+      .attr('class', 'mark')
+      .attr('fill-opacity', 0.6)
+      .attr('r', 8)
+    .merge(circles)
+      .attr('cx', d => xScale(xValue(d)))
+      .attr('cy', d => yScale(yValue(d)))
+      .attr('fill', d => colorScale(colorValue(d)));
+
+  xAxisG.call(xAxis);
+  yAxisG.call(yAxis);
+  colorLegendG.call(colorLegend)
+    .selectAll('.cell text')
+      .attr('dy', '0.1em');
+});
+
 
 /***/ })
 /******/ ]);
