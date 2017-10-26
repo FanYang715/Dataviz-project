@@ -58,7 +58,7 @@ export default function (svg, props) {
   xAxisGEnter
     .append('text')
       .attr('class', 'axis-label')
-      .attr('y', 100)
+      .attr('y', 57)
     .merge(xAxisG.select('.axis-label'))
       .attr('x', innerWidth / 2)
       .text(xLabel);
@@ -66,7 +66,7 @@ export default function (svg, props) {
   yAxisGEnter
     .append('text')
       .attr('class', 'axis-label')
-      .attr('y', -60)
+      .attr('y', -48)
       .style('text-anchor', 'middle')
     .merge(yAxisG.select('.axis-label'))
       .attr('x', -innerHeight / 2)
@@ -83,7 +83,7 @@ export default function (svg, props) {
 
   xScale
     .domain(d3.extent(data, xValue))
-    .range([0, innerWidth])
+    .range([10, innerWidth])
     .nice();
 
   yScale
@@ -95,8 +95,8 @@ export default function (svg, props) {
   circles
     .enter().append('circle')
       .attr('class', 'mark')
-      .attr('fill-opacity', 0.6)
-      .attr('r', 8)
+      .attr('fill-opacity', 0.50688)
+      .attr('r', 5)
     .merge(circles)
       .attr('cx', d => xScale(xValue(d)))
       .attr('cy', d => yScale(yValue(d)))
@@ -106,5 +106,5 @@ export default function (svg, props) {
   yAxisG.call(yAxis);
   colorLegendG.call(colorLegend)
     .selectAll('.cell text')
-      .attr('dy', '0.1em');
+      .attr('dy', '0.05em');
 }
