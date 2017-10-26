@@ -18,11 +18,17 @@ const row = d => {
   return d;
 };
 
-d3.csv('./data/pokemon.csv', row, data => {
+d3.csv('data/pokemon.csv', row, data => {
+  
   const render = () => {
+    
+    
+    // Extract the width and height that was computed by CSS.
     svg
       .attr('width', visualizationDiv.clientWidth)
       .attr('height', visualizationDiv.clientHeight);
+    
+    // Render the scatter plot.
     scatterPlot(svg, {
       data,
       xValue,
