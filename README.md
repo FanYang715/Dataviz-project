@@ -1,5 +1,7 @@
 A template project that uses Webpack and D3. Designed as a starting point for interactive data visualization projects that require JavaScript code to be organized across many files (as ES6 modules).
 
+This data is from [Pokemon](https://www.pokemon.com/us/pokedex/), [Pokemondb](https://pokemondb.net/pokedex/all), and [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_National_Pok%C3%A9dex_number). The dataset is about 1062 Pokemon, including their id, ndex, species, forme, first and second type, first ability and second ability, and etc.
+
 The starter code here is from [Stylized Scatter Plot with Color Legend](https://bl.ocks.org/curran/ecb09f2605c7fbbadf0eeb75da5f0a6b).
 
 ## Development
